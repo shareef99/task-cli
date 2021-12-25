@@ -103,16 +103,25 @@ $ ./task report               # Statistics
                         .sort((a, b) => a.priority - b.priority)
                         .filter((task) => task.priority);
 
-                    const newTasks = sortedTasks.filter(
-                        (task) => task.index !== parseInt(index)
-                    );
+                    if (+index > sortedTasks.length || +index === 0) {
+                        console.log(
+                            `Error: task with index #${index} does not exist. Nothing deleted.`
+                        );
+                    } else {
+                        const newTasks = sortedTasks.filter(
+                            (task) => task.index !== parseInt(index)
+                        );
 
-                    const newTasksStringArray = newTasks.map((task) => {
-                        return `${task.priority} ${task.text}`;
-                    });
+                        const newTasksStringArray = newTasks.map((task) => {
+                            return `${task.priority} ${task.text}`;
+                        });
 
-                    writeFileSync("task.txt", newTasksStringArray.join("\n"));
-                    console.log(`Deleted task #${index}`);
+                        writeFileSync(
+                            "task.txt",
+                            newTasksStringArray.join("\n")
+                        );
+                        console.log(`Deleted task #${index}`);
+                    }
                 }
             });
         }
@@ -139,16 +148,25 @@ $ ./task report               # Statistics
                         .sort((a, b) => a.priority - b.priority)
                         .filter((task) => task.priority);
 
-                    const newTasks = sortedTasks.filter(
-                        (task) => task.index !== parseInt(index)
-                    );
+                    if (+index > sortedTasks.length || +index === 0) {
+                        console.log(
+                            `Error: no incomplete item with index #${index} exists.`
+                        );
+                    } else {
+                        const newTasks = sortedTasks.filter(
+                            (task) => task.index !== parseInt(index)
+                        );
 
-                    const newTasksStringArray = newTasks.map((task) => {
-                        return `${task.priority} ${task.text}`;
-                    });
+                        const newTasksStringArray = newTasks.map((task) => {
+                            return `${task.priority} ${task.text}`;
+                        });
 
-                    writeFileSync("task.txt", newTasksStringArray.join("\n"));
-                    console.log("Marked item as done.");
+                        writeFileSync(
+                            "task.txt",
+                            newTasksStringArray.join("\n")
+                        );
+                        console.log("Marked item as done.");
+                    }
                 }
             });
         }
@@ -171,10 +189,6 @@ $ ./task report               # Statistics
                     .filter((task) => {
                         return task.priority;
                     });
-
-                const pendingTasksStringArray = pendingTasks.map((task) => {
-                    return `${task.priority} ${task.text}`;
-                });
 
                 console.log(`Pending tasks: ${pendingTasks.length}`);
                 pendingTasks.forEach((task, index) => {
@@ -206,10 +220,6 @@ $ ./task report               # Statistics
                     .filter((task) => {
                         return task.priority;
                     });
-
-                const completedTasksStringArray = completedTasks.map((task) => {
-                    return `${task.priority} ${task.text}`;
-                });
 
                 console.log(`Completed tasks: ${completedTasks.length}`);
                 completedTasks.forEach((task, index) => {
