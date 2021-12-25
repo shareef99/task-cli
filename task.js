@@ -157,7 +157,7 @@ $ ./task report               # Statistics
     if (command === "report") {
         access(taskFilePath, (err) => {
             if (err) {
-                console.log("There are no pending tasks!");
+                console.log("Pending tasks: 0");
             } else {
                 const tasksFile = readFileSync("task.txt", "utf8");
                 const tasksArray = tasksFile.split("\n");
@@ -166,32 +166,15 @@ $ ./task report               # Statistics
                     const text = task.substring(task.indexOf(" ") + 1);
                     return { priority, text };
                 });
-
-                const sortedTasks = tasks.sort(
-                    (a, b) => a.priority - b.priority
-                );
-
-                const pendingTasks = sortedTasks.filter((task) => {
-                    return task.priority;
-                });
-
-                const completedTasks = sortedTasks.filter((task) => {
-                    return !task.priority;
-                });
+                const pendingTasks = tasks
+                    .sort((a, b) => a.priority - b.priority)
+                    .filter((task) => {
+                        return task.priority;
+                    });
 
                 const pendingTasksStringArray = pendingTasks.map((task) => {
                     return `${task.priority} ${task.text}`;
                 });
-
-                const completedTasksStringArray = completedTasks.map((task) => {
-                    return `${task.priority} ${task.text}`;
-                });
-
-                writeFileSync("task.txt", pendingTasksStringArray.join("\n"));
-                writeFileSync(
-                    "completed.txt",
-                    completedTasksStringArray.join("\n")
-                );
 
                 console.log(`Pending tasks: ${pendingTasks.length}`);
                 pendingTasks.forEach((task, index) => {
@@ -199,6 +182,35 @@ $ ./task report               # Statistics
                         `${index + 1}. ${task.text} [${task.priority}]`
                     );
                 });
+            }
+        });
+
+        access(completedTaskFilePath, (err) => {
+            if (err) {
+                console.log("Completed tasks: 0");
+            } else {
+                const completedTasksFile = readFileSync(
+                    "completed.txt",
+                    "utf8"
+                );
+                const completedTasksArray = completedTasksFile.split("\n");
+                const completedTasksObject = completedTasksArray.map((task) => {
+                    const priority = task.substring(0, task.indexOf(" "));
+                    const text = task.substring(task.indexOf(" ") + 1);
+                    return { priority, text };
+                });
+                const completedTasks = completedTasksObject
+                    .sort((a, b) => {
+                        a.priority - b.priority;
+                    })
+                    .filter((task) => {
+                        return task.priority;
+                    });
+
+                const completedTasksStringArray = completedTasks.map((task) => {
+                    return `${task.priority} ${task.text}`;
+                });
+
                 console.log(`Completed tasks: ${completedTasks.length}`);
                 completedTasks.forEach((task, index) => {
                     console.log(
